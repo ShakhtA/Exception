@@ -12,13 +12,32 @@ import java.util.Scanner;
 
 public class OnlineShopUI {
     public static void main(String[] args) {
+        Product product1 = new Product("product 1", 10, 23.99);
+        ProductDatabase.addProduct(product1);
+        ProductDatabase.getProducts();
+
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Для продолжения нажмите ENTER");
+        String pause = scanner.nextLine();
         System.out.print("Enter product ID: ");
         int productId = scanner.nextInt();
         System.out.print("Enter quantity: ");
         int quantity = scanner.nextInt();
 
-        double totalPrice = ShopManager.purchaseProduct(productId, quantity);
-        System.out.println("Total price: $" + totalPrice);
+        try {
+            double totalPrice = ShopManager.purchaseProduct(productId, quantity);
+            System.out.println("Total price: $" + totalPrice);
+            PayService.transaction(totalPrice);
+        }
+        catch (ProductIsNotFound ex) {
+            System.out.println(ex.getMessage());
+        }
+        catch (InsufficientProductException ex) {
+            System.out.println(ex.getMessage());
+        }
+        catch (InsufficientFundsException ex) {
+            System.out.println(ex.getMessage());
+        }
+
     }
 }
